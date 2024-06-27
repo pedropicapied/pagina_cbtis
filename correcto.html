@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo sobre Baterías</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #008080, #20b2aa);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        header:hover {
+            background: linear-gradient(to right, #20b2aa, #008080);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        nav {
+            position: relative;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: bold;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease-in-out;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        nav a:hover::before {
+            width: 100%;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #008080;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        nav ul li ul li {
+            width: 200px;
+        }
+
+        nav ul li:hover ul {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        nav ul li ul li a {
+            display: block;
+            padding: 0.5rem 1rem;
+            transition: background 0.3s ease-in-out;
+        }
+
+        nav ul li ul li a:hover {
+            background: #20b2aa;
+        }
+
+        .hero {
+            background-image: url('https://cdn.wallpapersafari.com/73/53/u1Rliw.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            animation: fadeIn 2s ease-in;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin: 0;
+            animation: slideInFromLeft 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            animation: slideInFromRight 1s ease-out;
+        }
+
+        .hero button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #008080;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+            animation: fadeIn 2s ease-in;
+        }
+
+        .hero button:hover {
+            background-color: #20b2aa;
+            transform: scale(1.05);
+        }
+
+        .types,
+        .usage,
+        .testimonials,
+        .contact {
+            padding: 2rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .types h2,
+        .usage h2,
+        .testimonials h2,
+        .contact h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .types h2::after,
+        .usage h2::after,
+        .testimonials h2::after,
+        .contact h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #008080;
+            transition: width 0.3s;
+        }
+
+        .types h2:hover::after,
+        .usage h2:hover::after,
+        .testimonials h2:hover::after,
+        .contact h2:hover::after {
+            width: 100px;
+        }
+
+        .type,
+        .usage-tip,
+        .testimonial {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .type:hover,
+        .usage-tip:hover,
+        .testimonial:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .contact input,
+        .contact textarea {
+            width: 80%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .contact input:focus,
+        .contact textarea:focus {
+            border-color: #008080;
+            box-shadow: 0 0 5px rgba(0, 128, 128, 0.5);
+        }
+
+        .contact button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #008080;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .contact button:hover {
+            background-color: #20b2aa;
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #008080;
+            transition: width 0.3s;
+        }
+
+        footer:hover::after {
+            width: 100px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                transform: translateX(-100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .pato {
+            color: #000;
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+
+
+        }
+        p
+        {
+            font-size: 20px;
+            color: #000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+
+    </style>
+</head>
+<script>
+    $(document).ready(function () {
+        // Redireccionamiento a otras páginas al hacer clic en los enlaces del menú
+        $('nav a').click(function (e) {
+            // Evitar el comportamiento predeterminado de los enlaces
+            e.preventDefault();
+            // Obtener la URL del enlace
+            var href = $(this).attr('href');
+            // Redireccionar a la URL
+            window.location.href = href;
+        });
+
+
+        // Efecto del botón en la sección hero
+        $('.hero button').click(function () {
+            $('html, body').animate({
+                scrollTop: $('#types').offset().top
+            }, 500);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Redireccionamiento a otras páginas al hacer clic en los enlaces del menú
+        $('nav a').click(function (e) {
+            // Evitar el comportamiento predeterminado de los enlaces
+            e.preventDefault();
+            // Obtener la URL del enlace
+            var href = $(this).attr('href');
+            // Redireccionar a la URL
+            window.location.href = href;
+        });
+    });
+</script>
+
+</head>
+
+<body>
+    <header>
+        <div class="logo">Todo sobre Baterías</div>
+        <nav>
+            <ul>
+                
+                <li><a href="pilas.html">Todo sobre las baterias</a></li>
+                <li><a href="centrospilas.html">Centros</a></li>
+                <li><a href="comocrearlas.html">Como se Crean</a></li>
+                <li><a href="index.html">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="hero">
+        <h1>Todo sobre El Uso Correcto de las baterias</h1>
+        <h3 class="pato">Descubre los diferentes tipos y cómo utilizarlas correctamente</h3>
+        <button>Aprende Más</button>
+    </section>
+    <section id="types" class="types">
+
+
+
+
+        <div id="type1" class="type">
+            <h1>Uso Correcto de Pilas y Baterías</h1>
+
+            <ul style="font-size: larger; line-height: 1.8;">
+                <li><span class="inspeccion">Inspección:</span> Antes de usar una pila o batería, inspecciona su estado
+                    físico. Busca signos de daño como abolladuras, fugas o corrosión.</li>
+                <br>
+                <li><span class="almacenamiento">Almacenamiento:</span> Guarda las pilas y baterías en un lugar fresco y
+                    seco, lejos de la luz solar directa y fuentes de calor.</li>
+                <br>
+                <li><span class="contacto">Contacto:</span> Evita que entren en contacto con objetos metálicos para
+                    prevenir cortocircuitos.</li>
+                <br>
+                <li><span class="carga">Carga:</span> Utiliza siempre el cargador adecuado y sigue las instrucciones del
+                    fabricante para la carga.</li>
+                <br>
+                <li><span class="temperatura">Temperatura:</span> No cargues ni uses baterías a temperaturas extremas,
+                    ya que esto puede reducir su vida útil o causar daños.</li>
+                <br>
+                <li><span class="ciclos">Ciclos de Carga:</span> Completa ciclos de carga completos y permite que la
+                    batería se enfríe antes de volver a cargarla.</li>
+                <br>
+                <li><span class="reciclaje">Reciclaje:</span> Al final de su vida útil, recicla las pilas y baterías de
+                    manera responsable.</li>
+                <br>
+            </ul>
+        </div>
+
+
+    </section>
+    <center>
+        <img src="img/pila1.avif" alt="300">
+    </center>
+
+
+<center>
+    <h1>Reciclaje de Pilas</h1>
+    </center>
+    <ol style="font-size: larger; line-height: 1.8;" class="pato">
+        <br>
+        <li style="color: #000;">Identifica el tipo de pila: Alcalinas, de zinc-aire, de litio-ion, níquel-cadmio, etc.</li>
+<br>
+        <li style="color: #000;">Separa las pilas usadas: Diferencia entre pilas de un solo uso y recargables.</li>
+<br>
+        <li style="color: #000;">Prepara para el reciclaje: Para las pilas de un solo uso, colócales cinta en los terminales para prevenir
+            cortocircuitos y guárdalas en un contenedor de plástico o cartón.</li>
+<br>
+        <li style="color: #000;">Encuentra un programa local: Busca programas de reciclaje locales o puntos de entrega designados para el
+            tipo específico de pilas que tienes.</li>
+<br>
+        <li style="color: #000;">Entrega las pilas: Llévalas al punto de reciclaje o entrega designado.</li>
+<br>
+    </ol>
+
+    <p>Es importante no desechar las pilas en la basura común ya que pueden contener materiales tóxicos y peligrosos
+        para el medio ambiente.</p>
+
+    <br><br><br><br><br><br><br><br>
+    <center>
+        <img src="img/bate.jpg" alt="400">
+    </center>
+    <br>
+    <br>
+    <section id="types" class="types">
+        <h1 style="color: #000; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> Video sobre lo que se le asen a las pilas </h1>
+        <div id="type1" class="type">
+            <h3 style="color: #000; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"></h3>
+
+            <br>
+            <iframe width="770" height="433" src="https://www.youtube.com/embed/pzsPpO7_0tU"
+                title="¿Qué hacer con las pilas usadas?" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+        </div>
+
+    </section>
+    <br>
+
+
+    <br>
+    <br>
+
+    <footer>
+        <p>&copy; 2024 Todo sobre Baterías. Todos los derechos reservados.</p>
+    </footer>
+</body>
+
+</html>

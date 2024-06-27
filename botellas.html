@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información sobre el Plástico</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f0f0;
+        color: #333;
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    header {
+        background: linear-gradient(to right, #008080, #20b2aa);
+        padding: 1rem 2rem;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s;
+    }
+
+    header:hover {
+        background: linear-gradient(to right, #20b2aa, #008080);
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    nav {
+        position: relative;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-weight: bold;
+        position: relative;
+        transition: color 0.3s ease-in-out;
+    }
+
+    nav a::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: white;
+        transition: width 0.3s ease-in-out;
+    }
+
+    nav a:hover {
+        color: #ffd700;
+    }
+
+    nav a:hover::before {
+        width: 100%;
+    }
+
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+
+    nav ul li {
+        position: relative;
+    }
+
+    nav ul li ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #008080;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    nav ul li ul li {
+        width: 200px;
+    }
+
+    nav ul li:hover ul {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    nav ul li ul li a {
+        display: block;
+        padding: 0.5rem 1rem;
+        transition: background 0.3s ease-in-out;
+    }
+
+    nav ul li ul li a:hover {
+        background: #20b2aa;
+    }
+
+    .hero {
+        background-image: url('https://th.bing.com/th/id/OIG3.Yi17J2AY7atgdXlSfFYr?pid=ImgGn');
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        animation: fadeIn 2s ease-in;
+    }
+
+    .hero h1 {
+        font-size: 4rem;
+        margin: 0;
+        animation: slideInFromLeft 1s ease-out;
+    }
+
+    .hero p {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+        animation: slideInFromRight 1s ease-out;
+    }
+
+    .hero button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        color: white;
+        background-color: #008080;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+        animation: fadeIn 2s ease-in;
+    }
+
+    .hero button:hover {
+        background-color: #20b2aa;
+        transform: scale(1.05);
+    }
+
+    .types,
+    .usage,
+    .testimonials,
+    .contact {
+        padding: 2rem;
+        text-align: center;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .types h2,
+    .usage h2,
+    .testimonials h2,
+    .contact h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .types h2::after,
+    .usage h2::after,
+    .testimonials h2::after,
+    .contact h2::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -10px;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 2px;
+        background: #008080;
+        transition: width 0.3s;
+    }
+
+    .types h2:hover::after,
+    .usage h2:hover::after,
+    .testimonials h2:hover::after,
+    .contact h2:hover::after {
+        width: 100px;
+    }
+
+    .type,
+    .usage-tip,
+    .testimonial {
+        background: white;
+        padding: 1.5rem;
+        margin: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .type:hover,
+    .usage-tip:hover,
+    .testimonial:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contact input,
+    .contact textarea {
+        width: 80%;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .contact input:focus,
+    .contact textarea:focus {
+        border-color: #008080;
+        box-shadow: 0 0 5px rgba(0, 128, 128, 0.5);
+    }
+
+    .contact button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        color: white;
+        background-color: #008080;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .contact button:hover {
+        background-color: #20b2aa;
+        transform: scale(1.05);
+    }
+
+    footer {
+        background: #333;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        position: relative;
+    }
+
+    footer::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -10px;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 2px;
+        background: #008080;
+        transition: width 0.3s;
+    }
+
+    footer:hover::after {
+        width: 100px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            transform: translateX(-100%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            transform: translateX(100%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    .pato {
+        color: #000;
+        font-weight: bold;
+        font-size: 20px;
+        text-decoration: none;
+
+
+    }
+</style>
+
+
+
+<body>
+    <header>
+        <div class="logo">Todo sobre Plastico</div>
+        <nav>
+            <ul>
+
+
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pilas.html">Pilas</a></li>
+                <li><a href="parra.html">Resiclaje</a></li>
+                <li><a href="huella.html">Huella</a></li>
+                <li><a href="cbtis.html">CBtis</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="que-es-plastico">
+            <h2>¿Qué es el plástico?</h2>
+            <p>El plástico es un material sintético compuesto principalmente por polímeros, grandes moléculas formadas
+                por la unión de muchas moléculas más pequeñas llamadas monómeros. Los plásticos son producidos a través
+                de un proceso químico conocido como polimerización, que combina monómeros de compuestos como el etileno
+                y el propileno para crear largas cadenas moleculares.</p>
+            <h3>Historia del plástico</h3>
+            <p>El desarrollo del plástico comenzó a finales del siglo XIX y principios del siglo XX. El primer plástico
+                completamente sintético, la baquelita, fue creado por Leo Baekeland en 1907. A partir de entonces, se
+                han desarrollado numerosos tipos de plásticos con diversas propiedades, adecuados para una amplia gama
+                de aplicaciones.</p>
+            <h3>Tipos de plásticos</h3>
+            <ul>
+                <li><strong>Polietileno (PE):</strong> Utilizado en bolsas de plástico, botellas, juguetes y más. Es uno
+                    de los plásticos más comunes y tiene dos variantes principales: polietileno de baja densidad (LDPE)
+                    y polietileno de alta densidad (HDPE).</li>
+                <li><strong>Polipropileno (PP):</strong> Utilizado en envases de alimentos, tapas de botellas, y
+                    componentes automotrices. Es conocido por su resistencia y durabilidad.</li>
+                <li><strong>Polietileno tereftalato (PET):</strong> Utilizado principalmente en botellas de bebidas y
+                    textiles. Es reciclable y tiene buenas propiedades de barrera contra gases.</li>
+                <li><strong>Cloruro de polivinilo (PVC):</strong> Utilizado en tuberías, revestimientos de cables y
+                    materiales de construcción. Es duradero y resistente a la corrosión.</li>
+                <li><strong>Poliestireno (PS):</strong> Utilizado en envases de alimentos, vasos desechables y
+                    materiales de embalaje. Puede ser rígido o expandido (espuma).</li>
+                <li><strong>Policarbonato (PC):</strong> Utilizado en lentes de gafas, discos compactos y materiales de
+                    seguridad. Es transparente y tiene una alta resistencia al impacto.</li>
+                <li><strong>Acrilonitrilo butadieno estireno (ABS):</strong> Utilizado en carcasas de electrodomésticos,
+                    juguetes como los bloques LEGO y componentes automotrices. Es conocido por su resistencia y rigidez.
+                </li>
+            </ul>
+            <h3>Propiedades de los plásticos</h3>
+            <p>Los plásticos son extremadamente versátiles y poseen una amplia variedad de propiedades, que incluyen:
+            </p>
+            <ul>
+                <li><strong>Ligereza:</strong> Los plásticos son mucho más ligeros que los materiales tradicionales como
+                    el metal o el vidrio, lo que los hace más fáciles de manejar y transportar.</li>
+                <li><strong>Durabilidad:</strong> Muchos plásticos son resistentes a la corrosión y a la mayoría de los
+                    productos químicos, lo que les permite durar mucho tiempo en diversas aplicaciones.</li>
+                <li><strong>Moldeabilidad:</strong> Los plásticos pueden ser moldeados en prácticamente cualquier forma
+                    durante su producción, lo que permite una gran libertad de diseño.</li>
+                <li><strong>Aislante:</strong> Los plásticos son buenos aislantes térmicos y eléctricos, lo que los hace
+                    ideales para aplicaciones en electrónica y construcción.</li>
+                <li><strong>Transparencia:</strong> Algunos plásticos pueden ser tan transparentes como el vidrio, lo
+                    que los hace útiles para aplicaciones donde se necesita visibilidad.</li>
+            </ul>
+            <h3>Producción de plásticos</h3>
+            <p>La producción de plásticos implica varios pasos fundamentales:</p>
+            <ul>
+                <li><strong>Extracción de materias primas:</strong> La mayoría de los plásticos se producen a partir de
+                    recursos naturales como el petróleo y el gas natural.</li>
+                <li><strong>Polimerización:</strong> Los monómeros extraídos del petróleo o el gas se someten a procesos
+                    químicos para formar polímeros.</li>
+                <li><strong>Formulación:</strong> Los polímeros se mezclan con aditivos como estabilizadores, colorantes
+                    y plastificantes para otorgarles propiedades específicas.</li>
+                <li><strong>Moldeado:</strong> Los plásticos formulados se moldean en productos finales a través de
+                    técnicas como la extrusión, inyección, soplado y termoformado.</li>
+            </ul>
+            <h3>Impacto económico</h3>
+            <p>La industria del plástico es un componente vital de la economía global. Emplea a millones de personas en
+                todo el mundo y es fundamental para numerosas industrias, incluyendo la automotriz, la construcción, la
+                electrónica, y la salud.</p>
+            <h3>Problemas ambientales</h3>
+            <p>A pesar de sus beneficios, el uso extensivo de plásticos ha llevado a graves problemas ambientales. Los
+                plásticos desechados pueden tardar cientos de años en degradarse, y su presencia en el medio ambiente
+                puede causar daño a la fauna y la flora. Además, la producción de plásticos contribuye
+                significativamente a las emisiones de gases de efecto invernadero.</p>
+            <h3>Futuro de los plásticos</h3>
+            <p>El futuro de los plásticos se centra en el desarrollo de materiales más sostenibles y en la mejora de las
+                tasas de reciclaje. Los plásticos biodegradables y los plásticos reciclados son áreas de investigación y
+                desarrollo prometedoras. Además, las políticas gubernamentales y la conciencia pública están impulsando
+                cambios hacia una economía circular, donde los plásticos se reutilizan y reciclan en lugar de ser
+                desechados.</p>
+        </section>
+        <section id="reutiliza-reduce-recicla">
+            <h2>Reutilizar, Reducir y Reciclar</h2>
+            <p>Reutilizar implica usar los productos de plástico varias veces. Reducir significa disminuir el consumo de
+                productos de plástico. Reciclar consiste en transformar el plástico usado en nuevos productos.</p>
+        </section>
+        <section id="como-reciclar">
+            <h2>¿Cómo se realiza el reciclado?</h2>
+            <p>El reciclaje del plástico es un proceso que permite convertir los residuos plásticos en nuevos productos,
+                reduciendo así la necesidad de materias primas vírgenes y minimizando el impacto ambiental. El proceso
+                de reciclaje del plástico consta de varias etapas:</p>
+            <h3>1. Recolección</h3>
+            <p>La primera etapa del reciclaje es la recolección de los residuos plásticos. Esto puede llevarse a cabo
+                mediante programas de reciclaje municipales, puntos de recolección específicos, o iniciativas privadas.
+                Los plásticos se recolectan de hogares, empresas e industrias.</p>
+            <h3>2. Clasificación</h3>
+            <p>Una vez recolectados, los plásticos se llevan a una planta de reciclaje donde se clasifican por tipo de
+                resina y color. La clasificación es crucial, ya que diferentes tipos de plásticos tienen propiedades
+                diferentes y deben procesarse de manera distinta. La clasificación puede hacerse manualmente o mediante
+                sistemas automatizados que utilizan tecnología como sensores infrarrojos.</p>
+            <h3>3. Limpieza</h3>
+            <p>Después de la clasificación, los plásticos se limpian para eliminar contaminantes como etiquetas,
+                adhesivos, residuos de alimentos y otros materiales no plásticos. La limpieza puede implicar varios
+                métodos, como lavado con agua, soluciones químicas y procesos de separación mecánica.</p>
+            <h3>4. Triturado</h3>
+            <p>Los plásticos limpios se trituran en pequeños fragmentos llamados "flakes" o escamas. Este proceso
+                facilita su manejo y procesamiento en etapas posteriores. Los fragmentos triturados pueden ser de
+                diferentes tamaños, dependiendo del tipo de plástico y del uso final deseado.</p>
+            <h3>5. Fundición y Reextrusión</h3>
+            <p>Los fragmentos triturados se funden y se reextruyen para formar nuevos pellets o gránulos de plástico.
+                Estos pellets son la materia prima utilizada en la fabricación de nuevos productos plásticos. Durante la
+                fundición, los plásticos pueden mezclarse con aditivos para mejorar sus propiedades o ajustar sus
+                características según las necesidades del producto final.</p>
+            <h3>6. Fabricación de Nuevos Productos</h3>
+            <p>Los pellets de plástico reciclado se utilizan para fabricar nuevos productos mediante procesos como
+                extrusión, moldeo por inyección, soplado y termoformado. Los productos hechos de plástico reciclado
+                incluyen envases, bolsas, tuberías, componentes automotrices, muebles y más.</p>
+            <h3>Tipos de Reciclaje de Plástico</h3>
+            <p>Existen diferentes métodos de reciclaje de plástico, cada uno adecuado para distintos tipos de plásticos
+                y aplicaciones:</p>
+            <ul>
+                <li><strong>Reciclaje Mecánico:</strong> Es el método más común y consiste en triturar y fundir los
+                    plásticos para formar nuevos pellets. Este método es adecuado para plásticos como el polietileno
+                    (PE), el polipropileno (PP) y el polietileno tereftalato (PET).</li>
+                <li><strong>Reciclaje Químico:</strong> Implica descomponer los plásticos en sus monómeros originales
+                    mediante procesos químicos. Los monómeros pueden ser purificados y polimerizados nuevamente para
+                    formar plásticos nuevos. Este método es adecuado para plásticos que no se pueden reciclar
+                    mecánicamente.</li>
+                <li><strong>Reciclaje Energético:</strong> Consiste en convertir los plásticos en combustibles o energía
+                    mediante procesos como la pirólisis o la gasificación. Aunque no es un método preferido debido a la
+                    pérdida del material plástico, puede ser útil para plásticos que no pueden ser reciclados de otras
+                    maneras.</li>
+            </ul>
+            <h3>Beneficios del Reciclaje de Plástico</h3>
+            <ul>
+                <li><strong>Reducción de Residuos:</strong> El reciclaje ayuda a reducir la cantidad de residuos
+                    plásticos que terminan en vertederos y en el medio ambiente.</ </li>
+                <li><strong>Conservación de Recursos Naturales:</strong> Al reciclar plásticos, se reduce la necesidad
+                    de extraer y procesar materias primas vírgenes como el petróleo.</li>
+                <li><strong>Ahorro de Energía:</strong> La producción de plásticos reciclados generalmente requiere
+                    menos energía que la producción de plásticos nuevos a partir de materias primas vírgenes.</li>
+                <li><strong>Reducción de Emisiones:</strong> El reciclaje de plásticos contribuye a la reducción de
+                    emisiones de gases de efecto invernadero asociadas con la producción y eliminación de plásticos.
+                </li>
+            </ul>
+            <h3>Desafíos del Reciclaje de Plástico</h3>
+            <p>A pesar de sus beneficios, el reciclaje de plásticos enfrenta varios desafíos, como:</p>
+            <ul>
+                <li><strong>Contaminación:</strong> La presencia de contaminantes en los residuos plásticos puede
+                    dificultar el reciclaje y reducir la calidad del plástico reciclado.</li>
+                <li><strong>Variedad de Plásticos:</strong> Existen muchos tipos de plásticos con diferentes
+                    propiedades, lo que complica la clasificación y el reciclaje eficiente.</li>
+                <li><strong>Mercado de Plásticos Reciclados:</strong> La demanda de plásticos reciclados puede ser
+                    inestable, afectando la viabilidad económica del reciclaje.</li>
+                <li><strong>Educación y Conciencia:</strong> Es necesario educar a la población sobre la importancia del
+                    reciclaje y cómo separar correctamente los residuos plásticos.</li>
+            </ul>
+        </section>
+
+        <section id="diferencias-plasticos">
+            <h2>Diferencias entre los diferentes plásticos</h2>
+            <p>Los plásticos se diferencian por sus composiciones químicas y propiedades físicas, lo que los hace
+                adecuados para distintas aplicaciones. A continuación, se presentan algunos de los plásticos más
+                comunes, sus características y sus usos:</p>
+            <h3>1. Polietileno (PE)</h3>
+            <p>El polietileno es uno de los plásticos más utilizados en el mundo. Se clasifica en varias categorías
+                basadas en su densidad y estructura molecular:</p>
+            <ul>
+                <li><strong>Polietileno de baja densidad (LDPE):</strong> Es flexible y tiene una baja resistencia a la
+                    tracción. Se utiliza en bolsas de plástico, envolturas y recipientes flexibles.</li>
+                <li><strong>Polietileno de alta densidad (HDPE):</strong> Es más rígido y fuerte que el LDPE. Se utiliza
+                    en botellas, tuberías, contenedores de productos químicos y juguetes.</li>
+            </ul>
+            <h3>2. Polipropileno (PP)</h3>
+            <p>El polipropileno es un plástico resistente y versátil, conocido por su alta resistencia a la fatiga y su
+                bajo costo:</p>
+            <ul>
+                <li><strong>Usos:</strong> Envases de alimentos, tapas de botellas, componentes automotrices, textiles
+                    (como alfombras y ropa), y artículos de papelería.</li>
+                <li><strong>Propiedades:</strong> Alta resistencia al impacto, resistencia química, y punto de fusión
+                    alto, lo que lo hace adecuado para aplicaciones que requieren esterilización.</li>
+            </ul>
+            <h3>3. Polietileno tereftalato (PET)</h3>
+            <p>El PET es ampliamente conocido por su uso en envases de bebidas:</p>
+            <ul>
+                <li><strong>Usos:</strong> Botellas de bebidas, envases de alimentos, fibras para textiles (como
+                    poliéster), y películas de embalaje.</li>
+                <li><strong>Propiedades:</strong> Alta resistencia a la tracción, barrera efectiva contra gases (como el
+                    CO2), reciclabilidad y transparencia.</li>
+            </ul>
+            <h3>4. Cloruro de polivinilo (PVC)</h3>
+            <p>El PVC es un plástico versátil que puede ser rígido o flexible:</p>
+            <ul>
+                <li><strong>Usos:</strong> Tuberías, revestimientos de cables, ventanas, tarjetas de crédito, y
+                    productos médicos (como bolsas de sangre y tubos).</li>
+                <li><strong>Propiedades:</strong> Alta resistencia química, durabilidad, resistencia a la intemperie, y
+                    capacidad de ser plastificado para aplicaciones flexibles.</li>
+            </ul>
+            <h3>5. Poliestireno (PS)</h3>
+            <p>El poliestireno es un plástico económico utilizado en una variedad de aplicaciones:</p>
+            <ul>
+                <li><strong>Usos:</strong> Envases de alimentos, utensilios desechables, aislamiento térmico
+                    (poliestireno expandido), y componentes electrónicos.</li>
+                <li><strong>Propiedades:</strong> Rigidez, claridad (en su forma cristalina), y capacidad de ser
+                    espumado para producir materiales ligeros y aislantes.</li>
+            </ul>
+            <h3>6. Policarbonato (PC)</h3>
+            <p>El policarbonato es conocido por su alta resistencia al impacto y su transparencia:</p>
+            <ul>
+                <li><strong>Usos:</strong> Lentes de gafas, discos compactos, ventanas de seguridad, y componentes
+                    electrónicos.</li>
+                <li><strong>Propiedades:</strong> Transparencia, alta resistencia al impacto, y capacidad de resistir
+                    altas temperaturas.</li>
+            </ul>
+            <h3>7. Acrilonitrilo butadieno estireno (ABS)</h3>
+            <p>El ABS es un plástico fuerte y rígido utilizado en muchas aplicaciones industriales y de consumo:</p>
+            <ul>
+                <li><strong>Usos:</strong> Carcasas de electrodomésticos, juguetes (como los bloques LEGO), componentes
+                    automotrices, y equipamiento de oficina.</li>
+                <li><strong>Propiedades:</strong> Alta resistencia al impacto, buena resistencia al calor, y facilidad
+                    para ser moldeado y mecanizado.</li>
+            </ul>
+            <h3>8. Poliamida (Nylon)</h3>
+            <p>El nylon es un plástico resistente y versátil, comúnmente utilizado en textiles y aplicaciones
+                industriales:</p>
+            <ul>
+                <li><strong>Usos:</strong> Ropa, cuerdas, alfombras, engranajes, y piezas de máquinas.</li>
+                <li><strong>Propiedades:</strong> Alta resistencia al desgaste, buena resistencia química, y capacidad
+                    de absorción de humedad.</li>
+            </ul>
+        </section>
+
+        <section id="estadisticas">
+            <h2>Estadísticas y Gráficas</h2>
+            <canvas id="plasticUsageChart" width="400" height="200"></canvas>
+            <canvas id="waterBottleCompanyChart" width="400" height="200"></canvas>
+        </section>
+        <section id="impacto-ambiental">
+            <h2>Impacto Ambiental</h2>
+            <p>El uso y desecho de plásticos tienen un impacto significativo en el medio ambiente. A continuación, se
+                detallan los principales problemas ambientales asociados con los plásticos y sus consecuencias:</p>
+            <h3>1. Contaminación de los Océanos</h3>
+            <p>Una gran cantidad de residuos plásticos termina en los océanos, causando daños a la vida marina. Los
+                animales marinos pueden confundir los plásticos con alimentos, ingiriéndolos y sufriendo bloqueos
+                intestinales o intoxicación. Además, los plásticos pueden atrapar y herir a la fauna marina.</p>
+            <h3>2. Microplásticos</h3>
+            <p>Los plásticos no se biodegradan completamente; en su lugar, se descomponen en partículas más pequeñas
+                conocidas como microplásticos. Estos microplásticos son ingeridos por organismos marinos y pueden entrar
+                en la cadena alimentaria, llegando eventualmente a los seres humanos.</p>
+            <h3>3. Residuos en Vertederos</h3>
+            <p>La mayoría de los plásticos terminan en vertederos, donde pueden tardar cientos de años en descomponerse.
+                Durante este tiempo, pueden liberar sustancias químicas nocivas al suelo y al agua subterránea,
+                contaminando el medio ambiente.</p>
+            <h3>4. Emisiones de Gases de Efecto Invernadero</h3>
+            <p>La producción y eliminación de plásticos contribuyen a las emisiones de gases de efecto invernadero. La
+                producción de plásticos a partir de combustibles fósiles libera dióxido de carbono (CO2), mientras que
+                la incineración de residuos plásticos produce otros gases nocivos.</p>
+            <h3>5. Impacto en la Salud Humana</h3>
+            <p>El plástico puede liberar aditivos químicos, como ftalatos y bisfenol A (BPA), que son perjudiciales para
+                la salud humana. Estos químicos pueden interferir con el sistema endocrino y están asociados con una
+                variedad de problemas de salud, incluyendo cáncer, problemas reproductivos y trastornos del desarrollo.
+            </p>
+            <h3>6. Consumo de Recursos Naturales</h3>
+            <p>La producción de plásticos requiere una gran cantidad de recursos naturales, principalmente petróleo y
+                gas natural. La extracción y procesamiento de estos recursos tienen sus propios impactos ambientales,
+                incluyendo la destrucción de hábitats y la contaminación del aire y el agua.</p>
+            <h3>7. Problemas de Gestión de Residuos</h3>
+            <p>La gestión de residuos plásticos es un desafío significativo, especialmente en países en desarrollo donde
+                la infraestructura de reciclaje y gestión de residuos es limitada. Esto conduce a una acumulación de
+                basura plástica en el medio ambiente, afectando tanto a los ecosistemas como a las comunidades humanas.
+            </p>
+            <h3>Iniciativas y Soluciones</h3>
+            <p>Para mitigar el impacto ambiental del plástico, se están implementando diversas iniciativas y soluciones:
+            </p>
+            <ul>
+                <li><strong>Reciclaje y Reutilización:</strong> Promover el reciclaje y la reutilización de productos
+                    plásticos para reducir la cantidad de residuos.</li>
+                <li><strong>Reducción del Uso de Plásticos:</strong> Fomentar el uso de alternativas sostenibles al
+                    plástico, como materiales biodegradables y reutilizables.</li>
+                <li><strong>Limpieza de Océanos:</strong> Proyectos y campañas para limpiar los océanos y las costas de
+                    residuos plásticos.</li>
+                <li><strong>Educación y Concienciación:</strong> Aumentar la conciencia pública sobre los problemas
+                    ambientales asociados con el plástico y promover cambios en el comportamiento.</li>
+                <li><strong>Regulaciones y Políticas:</strong> Implementar leyes y políticas para reducir la producción
+                    y el uso de plásticos de un solo uso y mejorar la gestión de residuos.</li>
+            </ul>
+            <h3>Conclusión</h3>
+            <p>El impacto ambiental del plástico es un problema global que requiere una acción concertada a nivel
+                individual, comunitario y gubernamental. Reducir el uso de plásticos, mejorar las tasas de reciclaje y
+                desarrollar alternativas sostenibles son pasos cruciales para proteger nuestro medio ambiente y la salud
+                humana.</p>
+        </section>
+
+    </main>
+    <footer>
+        <p>&copy; 2024 Información sobre el Plástico sacada de la web legalmente
+        </p>
+    </footer>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Datos para el gráfico de uso de plásticos
+            const plasticUsageData = {
+                labels: ['Botellas', 'Bolsas', 'Envases', 'Utensilios', 'Empaques'],
+                datasets: [{
+                    label: 'Uso de Plásticos',
+                    data: [40, 25, 20, 10, 15],  // Estos datos son ejemplos
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Configuración para el gráfico de uso de plásticos
+            const plasticUsageConfig = {
+                type: 'bar',
+                data: plasticUsageData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+
+            // Datos para el gráfico de empresas productoras de botellas de agua
+            const waterBottleCompanyData = {
+                labels: ['Coca-Cola', 'PepsiCo', 'Nestlé', 'Danone', 'Tata Global Beverages'],
+                datasets: [{
+                    label: 'Producción de Botellas de Agua',
+                    data: [50, 30, 20, 15, 10],  // Estos datos son ejemplos
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Configuración para el gráfico de empresas productoras de botellas de agua
+            const waterBottleCompanyConfig = {
+                type: 'bar',
+                data: waterBottleCompanyData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+
+            // Crear los gráficos
+            const plasticUsageChart = new Chart(
+                document.getElementById('plasticUsageChart'),
+                plasticUsageConfig
+            );
+
+            const waterBottleCompanyChart = new Chart(
+                document.getElementById('waterBottleCompanyChart'),
+                waterBottleCompanyConfig
+            );
+        });
+
+
+    </script>
+</body>
+
+</html>

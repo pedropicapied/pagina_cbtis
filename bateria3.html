@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
+
+</head>
+<body>
+    <canvas id="miGrafica"></canvas>
+
+</body>
+
+<script>
+
+const ctx = document.getElementById('miGrafica').getContext('2d');
+const etiquetas = ['Enero', 'Febrero', 'Marzo', 'Abril'];
+const datos = [10, 20, 15, 30];
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: etiquetas,
+        datasets: [{
+            label: 'Ventas mensuales',
+            data: datos,
+            borderColor: 'blue',
+            fill: false,
+        }]
+    },
+});
+
+
+</script>
+</html>
